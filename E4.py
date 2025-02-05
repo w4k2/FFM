@@ -37,7 +37,7 @@ for f_id, f in enumerate(files):
     # first identify number of clusters
     scores_reps = []
     for i in range(10):
-        search = np.arange(4,10)
+        search = np.arange(4,9)
         scores = []
         
         for s in search:
@@ -68,30 +68,50 @@ for f_id, f in enumerate(files):
     
     clusters = clusters_2
     
-    fig, ax = plt.subplots(n+1,n, figsize=(8,10), sharex=True, sharey=True)
+    fig, ax = plt.subplots(n+1,n, figsize=(7.5,10), sharex=True, sharey=True)
     axx = plt.subplot(n+1,1,6)
     
-    plt.suptitle('%s | %i concepts' % (f.split('.')[0], best))
+    plt.suptitle('%s | %i concepts' % (f.split('.')[0].replace('-', ' | ').replace('_', ' ').replace('norm', ''), best))
+    
+    vmin, vmax = np.min(rep), np.max(rep)
     
     for i in range(n):
         for j in range(n):
-            ax[i,j].scatter(rep[:,i], rep[:,j], c=clusters, s=3, cmap='turbo', alpha=0.5)
+            ax[i,j].scatter(rep[:,i], rep[:,j], c=clusters, s=3, cmap='coolwarm', alpha=0.5)
             ax[i,j].grid(ls=':')
             ax[i,j].spines['top'].set_visible(False)
             ax[i,j].spines['right'].set_visible(False)
             
             if i==0:
-                ax[-2,j].set_xlabel('freq = %i' % ffm.arg_var[j])
+                ax[i,j].set_title('freq = %i' % ffm.arg_var[j], fontsize=10)
+            #     ax[i,j].set_xticks([-2.5,0,2.5])
+            #     ax[i,j].set_xlim(vmin,vmax)
+            # else:
+            #     ax[i,j].set_xticks([-2.5,0,2.5],[])
+            #     ax[i,j].set_xlim(vmin,vmax)
                 
             if j==0:
                 ax[i,j].set_ylabel('freq = %i' % ffm.arg_var[i])
-                
-    axx.scatter(np.arange(len(clusters)), clusters, c=clusters, cmap='turbo', s=10)
+                # ax[i,j].set_yticks([-2.5,0,2.5])
+                # ax[i,j].set_ylim(vmin,vmax)
+            # else:
+                # ax[i,j].set_yticks([-2.5,0,2.5],[])
+                # ax[i,j].set_ylim(vmin,vmax)
+
+    axx.scatter(np.arange(len(clusters)), clusters, c=clusters, cmap='coolwarm', s=10)
     axx.grid(ls=':')
-    
+    axx.spines['top'].set_visible(False)
+    axx.spines['right'].set_visible(False)
+    axx.set_xlim(0,len(clusters))
+    axx.set_yticks(np.arange(np.max(clusters)+1))
+    axx.set_xlabel('chunk')
+    axx.set_ylabel('concept')
+                
     for aa in ax[-1,:]:
-        aa.set_xticklabels([])
-        aa.set_yticklabels([])
+        aa.set_xticks([])
+        aa.set_yticks([])
+        aa.spines['right'].set_visible(False)
+
             
     plt.tight_layout()
     plt.savefig('foo.png')
