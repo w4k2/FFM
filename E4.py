@@ -36,19 +36,38 @@ for f_id, f in enumerate(files):
     
     # first identify number of clusters
     # TODO stabilizacja
-    search = np.arange(4,10)
-    scores = []
-    
-    for s in search:
-        clusters = KMeans(n_clusters=s).fit_predict(rep)
-        scores.append(silhouette_score(rep, clusters))
+    scores_reps = []
+    for i in range(10):
+        search = np.arange(4,10)
+        scores = []
         
-    best = search[np.argmax(scores)]
+        for s in search:
+            clusters = KMeans(n_clusters=s).fit_predict(rep)
+            scores.append(silhouette_score(rep, clusters))
+        
+        scores_reps.append(scores)
+    
+    scores_reps = np.array(scores_reps)
+    print(scores_reps.shape)
+    scores_reps = np.mean(scores_reps, axis=0)
+    best = search[np.argmax(scores_reps)]
     print(best)
     
     # cluster
     clusters = KMeans(n_clusters=best).fit_predict(StandardScaler().fit_transform(rep))
     print(clusters)
+    
+    clusters_2 = np.copy(clusters)
+
+    mapping_src = []
+    for i in clusters:
+        if i not in mapping_src:
+            mapping_src.append(i)
+            
+    for i_id, i in enumerate(mapping_src):
+        clusters_2[clusters==i] = i_id
+    
+    clusters = clusters_2
     
     fig, ax = plt.subplots(n+1,n, figsize=(8,10), sharex=True, sharey=True)
     axx = plt.subplot(n+1,1,6)
@@ -57,7 +76,7 @@ for f_id, f in enumerate(files):
     
     for i in range(n):
         for j in range(n):
-            ax[i,j].scatter(rep[:,i], rep[:,j], c=clusters, s=3, cmap='turbo', alpha=0.7)
+            ax[i,j].scatter(rep[:,i], rep[:,j], c=clusters, s=3, cmap='turbo', alpha=0.5)
             ax[i,j].grid(ls=':')
             ax[i,j].spines['top'].set_visible(False)
             ax[i,j].spines['right'].set_visible(False)
