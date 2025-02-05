@@ -24,13 +24,12 @@ print(results.shape) # (10, 5, 3, 5, 4)
 
 mean_res = np.nanmean(results, axis=0) # drifts, chunk_size, ns, metrics
 
-fig, ax = plt.subplots(1,3,figsize=(7,4), sharex=True, sharey=True)
+fig, ax = plt.subplots(1,3,figsize=(10,4), sharex=True, sharey=True)
 cols = plt.cm.coolwarm(np.linspace(0,1,5))
 cols[2][:3] -=0.15
 for chunk_size_id in range(3):
     aa = ax[chunk_size_id]
     aa.set_title('chunk size: %i' % chunk_size[chunk_size_id])
-    aa.set_xlabel('n')
     
     for n_drifts_id in range(5):
         
@@ -47,6 +46,9 @@ for chunk_size_id in range(3):
         
 ax[0].set_ylabel('NMI')
 ax[0].legend(frameon=False, loc='upper left')
+
+ax[1].set_xlabel('number of frequency components')
+
         
 plt.tight_layout()
 plt.savefig('foo.png')

@@ -17,7 +17,32 @@ class FFM:
                         
             fft_all = []
             for X_i in X:
-                fft_signal = np.fft.fft(X_i)[:len(X_i)//2] # len//2?
+                fft_signal = np.fft.fft(X_i)[:len(X_i)//2]
+                fft_all.append(fft_signal)
+            
+            fft_all = np.array(fft_all)
+            mean_fft = np.mean(fft_all, axis=0)
+                
+            self.mean_fft_all.append(mean_fft.real)
+  
+        self.mean_fft_all = np.array(self.mean_fft_all)
+                
+        var = np.var(self.mean_fft_all, axis=0)
+        self.arg_var = np.flip(np.argsort(var))[:self.n]
+            
+        return self
+    
+    def describe_data(self, data, chunk_size):    
+        self.mean_fft_all = []
+        
+        n_chunks = len(data)//chunk_size
+        
+        for chunk_id in range(n_chunks):
+            X = data[chunk_id*chunk_size : (chunk_id+1)*chunk_size]
+                        
+            fft_all = []
+            for X_i in X:
+                fft_signal = np.fft.fft(X_i)[:len(X_i)//2]
                 fft_all.append(fft_signal)
             
             fft_all = np.array(fft_all)

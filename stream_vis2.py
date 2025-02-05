@@ -8,11 +8,11 @@ import numpy as np
 n_chunks = 20
 chunk_size = 500
 n_drifts = 1
-dim = 250
+dim = 50
 
 stream = strlearn.streams.StreamGenerator(n_chunks=n_chunks,
                                             chunk_size=chunk_size,
-                                            concept_sigmoid_spacing=999,
+                                            concept_sigmoid_spacing=5,
                                             n_drifts=n_drifts,
                                             n_features=dim,
                                             n_informative=int(0.3*dim),
