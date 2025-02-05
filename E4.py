@@ -68,7 +68,7 @@ for f_id, f in enumerate(files):
     
     clusters = clusters_2
     
-    fig, ax = plt.subplots(n+1,n, figsize=(7.5,10), sharex=True, sharey=True)
+    fig, ax = plt.subplots(n+1,n, figsize=(8,10), sharex=True, sharey=True)
     axx = plt.subplot(n+1,1,6)
     
     plt.suptitle('%s | %i concepts' % (f.split('.')[0].replace('-', ' | ').replace('_', ' ').replace('norm', ''), best))
