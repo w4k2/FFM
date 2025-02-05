@@ -35,7 +35,6 @@ for f_id, f in enumerate(files):
     rep = StandardScaler().fit_transform(rep)
     
     # first identify number of clusters
-    # TODO stabilizacja
     scores_reps = []
     for i in range(10):
         search = np.arange(4,10)
