@@ -73,10 +73,10 @@ for f_id, f in enumerate(files):
     
     clusters = clusters_2
     
-    fig, ax = plt.subplots(n+1,n, figsize=(8,10), sharex=True, sharey=True)
+    fig, ax = plt.subplots(n+1,n, figsize=(6,8), sharex=True, sharey=True)
     axx = plt.subplot(n+1,1,6)
     
-    plt.suptitle('%s | %i concepts' % (f.split('.')[0].replace('-', ' | ').replace('_', ' ').replace('norm', ''), best))
+    plt.suptitle('%s| %i concepts' % (f.split('.')[0].replace('-', ' | ').replace('_', ' ').replace('norm', ''), best))
     
     vmin, vmax = np.min(rep), np.max(rep)
     
@@ -121,5 +121,6 @@ for f_id, f in enumerate(files):
     plt.tight_layout()
     plt.savefig('foo.png')
     plt.savefig('fig_insects/%i_%s.png' % (f_id, f.split('.')[0]))
+    plt.savefig('fig_insects/%i_%s.pdf' % (f_id, f.split('.')[0]))
     
     # exit()
