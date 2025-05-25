@@ -149,10 +149,15 @@ ax[2,0].set_yticks(y, ffm.arg_var)
 ax[2,0].set_title('frequency components')
 ax[2,0].set_ylabel('descreete frequency')
 
-ax[0,1].imshow(np.mean(X[:chunk_size],axis=0).reshape(8,8), aspect='auto', cmap='binary')
-ax[1,1].imshow(rec.reshape(8,8), aspect='auto', cmap='binary')
-ax[2,1].imshow(vs[0], aspect='auto', cmap='coolwarm')
+ax[0,1].imshow(np.mean(X[:chunk_size],axis=0).reshape(8,8), cmap='binary')
+ax[1,1].imshow(rec.reshape(8,8), cmap='binary')
+ax[2,1].imshow(vs[0], cmap='coolwarm')
 
+for aa in ax[:,0]:
+    aa.spines['top'].set_visible(False)
+    aa.spines['right'].set_visible(False)
+    aa.grid(ls=':')
+    aa.set_xlim(0,64)
 
 plt.tight_layout()
 plt.savefig('foo.png')
