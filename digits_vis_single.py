@@ -10,7 +10,7 @@ class FFM:
     def __init__(self, n):
         self.n=n
         
-    def describe(self, stream):    
+    def describe(self, stream):
         self.mean_fft_all = []
         
         n_chunks = stream.shape[0]//chunk_size
@@ -88,7 +88,7 @@ X = X[order]
 # X = X[order]
 
 ## Przetarzanie
-_n = 12
+_n = 8
 
 ffm = FFM(n=_n)
 ffm.describe(X)
@@ -104,7 +104,9 @@ print(aa.shape)
 
 ## reconstruct
 reconstruction_iters = []
-reconstruction_iters_base = []
+reconstruction_iters2 = []
+
+offset = 13
 
 rec = np.zeros(64)
 
@@ -122,20 +124,38 @@ for freq_id, strength in enumerate(aa[0]):
     rec += i_filtered
     reconstruction_iters.append(i_filtered)
 
+rec2 = np.zeros(64)
+for freq_id, strength in enumerate(aa[offset]):
+    freq = ffm.arg_var[freq_id]
+    
+    mask = np.zeros(64)
+    mask[freq] = 1
+    
+    filtered = mask*strength
+    i_filtered = np.fft.ifft(filtered).real
+    
+    i_filtered_base = np.fft.ifft(mask).real
+    
+    rec2 += i_filtered
+    reconstruction_iters2.append(i_filtered)
 
-fig, ax = plt.subplots(3, 2, figsize=(10,8), width_ratios=[0.7, 0.3])
+
+fig, ax = plt.subplots(3, 3, figsize=(11,6), width_ratios=[0.7, 0.15, 0.15])
 
 cols = plt.cm.coolwarm(np.linspace(0,1,_n))
 cols[:,:3] -= 0.2
 cols = np.clip(cols, 0,1)
 
+blue, red = plt.cm.coolwarm([0.0,1.0])
 
 for i in range(chunk_size):
-    ax[0,0].plot(X[i], ls=':', color='black', lw=0.5)
+    ax[0,0].plot(X[i], color=red, lw=0.5, alpha=.7)
+    ax[0,0].plot(X[(offset*chunk_size)+i], ls=':', color=blue, lw=0.5, alpha=0.7)
 ax[0,0].set_title('original features')
 ax[0,0].set_ylabel('feature value')
 
-ax[1,0].plot(rec, color='black')
+ax[1,0].plot(rec, color=red)
+ax[1,0].plot(rec2, color=blue, ls=':')
 ax[1,0].set_title('reconstructed features')
 ax[1,0].set_ylabel('feature value')
 
@@ -143,15 +163,21 @@ s = 1.3
 y=[]
 for i in range(_n):
     y.append(-s*i)
-    ax[2,0].plot(reconstruction_iters[i]-s*i, color=cols[i])
+    # ax[2,0].plot(reconstruction_iters[i]-s*i, color=cols[i])
+    ax[2,0].plot(reconstruction_iters[i]-s*i, color=red)
+    ax[2,0].plot(reconstruction_iters2[i]-s*i, color=blue, ls=':')
 
 ax[2,0].set_yticks(y, ffm.arg_var)
 ax[2,0].set_title('frequency components')
 ax[2,0].set_ylabel('descreete frequency')
 
-ax[0,1].imshow(np.mean(X[:chunk_size],axis=0).reshape(8,8), cmap='binary')
-ax[1,1].imshow(rec.reshape(8,8), cmap='binary')
+ax[0,1].imshow(np.mean(X[:chunk_size],axis=0).reshape(8,8), cmap='Reds')
+ax[0,2].imshow(np.mean(X[(offset*chunk_size):(offset+1)*chunk_size],axis=0).reshape(8,8), cmap='Blues')
+ax[1,1].imshow(rec.reshape(8,8), cmap='Reds')
+ax[1,2].imshow(rec2.reshape(8,8), cmap='Blues')
+
 ax[2,1].imshow(vs[0], cmap='coolwarm')
+ax[2,2].imshow(vs[offset], cmap='coolwarm')
 
 for aa in ax[:,0]:
     aa.spines['top'].set_visible(False)
@@ -159,5 +185,14 @@ for aa in ax[:,0]:
     aa.grid(ls=':')
     aa.set_xlim(0,64)
 
+ax[0,1].set_title('chunk 0')
+ax[0,2].set_title('chunk 13')
+ax[0,1].set_ylabel('mean in chunk')
+ax[1,1].set_ylabel('reconstruction')
+ax[2,1].set_ylabel('FFM visualization')
+
+fig.align_ylabels()
 plt.tight_layout()
 plt.savefig('foo.png')
+plt.savefig('vis_zero.png')
+plt.savefig('vis_zero.pdf')
