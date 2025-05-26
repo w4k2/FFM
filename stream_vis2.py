@@ -5,7 +5,7 @@ import numpy as np
 
     
 # Stream params
-n_chunks = 20
+n_chunks = 100
 chunk_size = 500
 n_drifts = 1
 dim = 50
@@ -31,18 +31,16 @@ aa = ffm.mean_fft_all[:, ffm.arg_var]
 print(aa.shape)
 
 ## Plot
-fig, ax = plt.subplots(2,10,figsize=(10,2.5), sharex=1, sharey=1)
-ax = ax.ravel()
+fig, ax = plt.subplots(1,8,figsize=(10,2), sharex=1, sharey=1)
 
 vmin = np.mean(ffm.chunk_convs) - 2*np.std(ffm.chunk_convs)
 vmax = np.mean(ffm.chunk_convs) + 2*np.std(ffm.chunk_convs)
 
-for i in range(n_chunks):
-    ax[i].imshow(ffm.chunk_convs[i], cmap='coolwarm', vmin=vmin, vmax=vmax, interpolation='none')
-    
-ax[0].set_ylabel('concept 0')
-ax[10].set_ylabel('concept 1')
-    
+n_chunks_vis = np.linspace(0,100-1,8).astype(int)
+for i_id, i in enumerate(n_chunks_vis):
+    ax[i_id].imshow(ffm.chunk_convs[i], cmap='coolwarm', vmin=vmin, vmax=vmax, interpolation='none')
+    ax[i_id].set_title('chunk %i' % i)
+        
 plt.tight_layout()
 plt.savefig('foo.png')
 plt.savefig('vis_freqs.png')
