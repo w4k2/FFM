@@ -26,11 +26,6 @@ for f_id, f in enumerate(files):
             data.extend(stream.get_chunk()[0])
         except:
             break
-       
-    # print(f) 
-    # print(len(data))
-    # print(data[0].shape)
-    # continue
     
     print(len(data))
     print(data[0].shape)

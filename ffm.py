@@ -1,9 +1,10 @@
 import numpy as np
+from sklearn.cluster import KMeans
+from sklearn.discriminant_analysis import StandardScaler
 
 """
 Frequency filtering metadescriptor
 """
-
 
 class FFM:
     def __init__(self, n):
@@ -24,7 +25,7 @@ class FFM:
         var = np.var(self.mean_fft_all, axis=0)
         self.arg_var = np.flip(np.argsort(var))[:self.n]
             
-        return self
+        return self.mean_fft_all[:,self.arg_var]
     
     def describe_data(self, data, chunk_size):    
         self.mean_fft_all = []
@@ -43,7 +44,12 @@ class FFM:
         var = np.var(self.mean_fft_all, axis=0)
         self.arg_var = np.flip(np.argsort(var))[:self.n]
             
-        return self
+        return self.mean_fft_all[:,self.arg_var]
+    
+    def cluster(self, c):
+        samples_std = StandardScaler().fit_transform(self.mean_fft_all[:,self.arg_var])
+        return KMeans(n_clusters=c).fit_predict(samples_std)
+            
     
     def visualize(self):
         

@@ -1,7 +1,6 @@
-import strlearn
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.datasets import load_digits, make_classification
+from sklearn.datasets import load_digits
 
 chunk_size = 20
 
@@ -35,9 +34,8 @@ class FFM:
         
         print(var.shape) # 12 (n_features//2)
         print(self.arg_var.shape) # 8 (n)
-        print(self.arg_var) #posortowane od najwiekszej
-        # exit()
-            
+        print(self.arg_var) #posortowane od najwiekszej            
+
         return self
     
     
@@ -78,14 +76,6 @@ class FFM:
 X, y = load_digits(return_X_y=True)
 order = np.argsort(y)
 X = X[order]
-
-# X, y = make_classification(n_features=64, 
-#                            n_informative=64,
-#                            n_redundant=0,
-#                            n_repeated=0,
-#                            n_samples=1700, n_classes=6, n_clusters_per_class=1)
-# order = np.argsort(y)
-# X = X[order]
 
 ## Przetarzanie
 _n = 8

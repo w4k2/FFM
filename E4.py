@@ -4,7 +4,7 @@ import os
 from strlearn.streams import ARFFParser
 import matplotlib.pyplot as plt
 from sklearn.discriminant_analysis import StandardScaler
-from sklearn.cluster import KMeans, MiniBatchKMeans
+from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 
 files = os.listdir('insects')
@@ -22,11 +22,6 @@ for f_id, f in enumerate(files):
             data.extend(stream.get_chunk()[0])
         except:
             break
-       
-    # print(f) 
-    # print(len(data))
-    # print(data[0].shape)
-    # continue
     
     print(len(data))
     print(data[0].shape)
