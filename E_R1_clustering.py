@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 
 # gt = get_gt(1000, 3)
 
-metrics = ['NMI', 'Rand', 'Completness', 'Homogenity']
+# metrics = ['NMI', 'Rand', 'Completness', 'Homogenity']
 # clustering = [
 #     AffinityPropagation(),
 #     AgglomerativeClustering(n_clusters=4),
@@ -114,7 +114,7 @@ for m_id, m in enumerate(metrics):
     ax[m_id].spines['top'].set_visible(False)
     ax[m_id].spines['right'].set_visible(False)
     ax[m_id].grid(ls=':')
-    ax[m_id].set_ylim(0.9,1)
+    # ax[m_id].set_ylim(0.9,1)
     
 plt.tight_layout()
 plt.savefig('foo.png')

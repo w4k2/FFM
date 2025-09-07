@@ -17,11 +17,11 @@ import matplotlib.pyplot as plt
 
 # # Stream params
 # n_chunks = 1000
-# n_drifts = 3
+# n_drifts = 5
 # percent_informative = 0.3
 
 # chunk_size = 256
-# dim = 64
+# dim = 128
 
 # # Experiment params
 # reps = 100
@@ -63,7 +63,7 @@ from utils import get_gt
 res = np.load('res/e_r1_div.npy') # FFM
 
 res_all = np.zeros((100, 3, 4))
-gt = get_gt(1000, 3)
+gt = get_gt(1000, 5)
 
 strategies = ['Variance', 'Entropy', 'Energy']
 metrics = ['NMI', 'Rand', 'Completness', 'Homogenity']
@@ -75,7 +75,7 @@ for rep in range(100):
         samples[np.isinf(samples)] = 0
         samples[np.isnan(samples)] = 0
         samples_std = StandardScaler().fit_transform(samples)
-        clusters_std = KMeans(n_clusters=4).fit_predict(samples_std)
+        clusters_std = KMeans(n_clusters=6).fit_predict(samples_std)
         
         for m_id, m in enumerate([normalized_mutual_info_score, adjusted_rand_score, completeness_score, homogeneity_score]):
             res_all[rep, strategy_id, m_id] = m(gt, clusters_std)
@@ -103,12 +103,9 @@ for m_id, m in enumerate(metrics):
     ax[m_id].spines['top'].set_visible(False)
     ax[m_id].spines['right'].set_visible(False)
     ax[m_id].grid(ls=':')
-    ax[m_id].set_ylim(0.9,1)
+    # ax[m_id].set_ylim(0.85,1)
     
 plt.tight_layout()
 plt.savefig('foo.png')
 plt.savefig('fig_r1/exp_div.png')
 plt.savefig('fig_r1/exp_div.pdf')
-
-
-
