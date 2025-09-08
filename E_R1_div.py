@@ -5,7 +5,6 @@ from tabulate import tabulate
 from ffm import FFM
 import numpy as np
 from tqdm import tqdm
-import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.metrics import adjusted_rand_score, completeness_score, homogeneity_score, normalized_mutual_info_score

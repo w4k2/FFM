@@ -111,11 +111,13 @@ print(res_all.shape) # 100, 9, 4 = reps, clustering, metrics
 res_m = np.round(np.mean(res_all, axis=0),3).astype('object')
 res_s = np.round(np.std(res_all, axis=0),3).astype('object')
 
+print(np.min(res_all))
+
 res_m = np.column_stack((cluster_names, res_m))
 res_s = np.column_stack((cluster_names, res_s))
 
-print(tabulate(res_m, headers=cluster_names))
-print(tabulate(res_s, headers=cluster_names))
+print(tabulate(res_m, headers=metrics))
+print(tabulate(res_s, headers=metrics))
 
 
 ### PLOT
