@@ -15,8 +15,9 @@ import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.discriminant_analysis import StandardScaler
 from scipy.stats import entropy
-from scipy.ndimage import median
-from utils import get_gt
+from scipy.ndimage import median, gaussian_filter1d
+from utils import get_drfs, get_gt
+
 
 """
 Online Frequency filtering metadescriptor
@@ -78,26 +79,13 @@ class OFFM:
             return True
         return False
     
-    # def describe_stream(self, X):
-        
-    #     n_chunks = len(X)//self.chunk_size
-    #     X_chunks = X_chunks.reshape(n_chunks, self.chunk_size, -1)
-        
-    #     for X in X_chunks:       
-    #         mean_chunk = np.mean(X, axis=0)
-    #         fft_signal = np.fft.fft(mean_chunk)[:len(mean_chunk)//2]
-    #         self.mean_fft_all.append(fft_signal.real)
-                
-    #     self.mean_fft_all = np.array(self.mean_fft_all)
-        
-    #     return self.mean_fft_all[self.arg_div]
     
 # -----------------------------------------------------------------------
 np.random.seed(3997)
 
 # Stream params
 n_chunks = 500
-n_drifts = 3
+n_drifts = 8
 percent_informative = 0.3
 
 chunk_size = 64
@@ -110,7 +98,8 @@ stream = strlearn.streams.StreamGenerator(n_chunks=n_chunks,
                     n_informative=int(percent_informative*dim),
                     random_state=34323)
 
-offm = OFFM(n=8, chunk_size=64, n_chunks_to_filter=100)
+n_chunks_to_filter = 100
+offm = OFFM(n=8, chunk_size=64, n_chunks_to_filter=n_chunks_to_filter)
 
 reps = []
 components = []
@@ -121,12 +110,19 @@ for chunk_id in range(n_chunks):
     
     for sample in X:
         
-        offm.fit(sample)
+        # Strategy 1 -- offline phase
+        if offm._check_is_fitted() == False:
+            offm.fit(sample)
+            
+        # Strategy 2 -- incremental fit 
+        # offm.fit(sample)
+            
         rep = offm.describe(sample)
         
         if rep is not None:
             reps.append(rep)
             components.append(offm.arg_div)
+            
         
 print(reps)
 reps = np.array(reps)
@@ -137,6 +133,17 @@ n_chunks = len(reps)//chunk_size
 reps = reps[:n_chunks*chunk_size].reshape(n_chunks, chunk_size, 8)
 reps = np.mean(reps, axis=1)
 
+clustered_reps = KMeans(n_clusters=n_drifts-1).fit_predict(reps)
+#reorder
+clusters_2 = np.copy(clustered_reps)
+mapping_src = []
+for i in clustered_reps:
+    if i not in mapping_src:
+        mapping_src.append(i)
+for i_id, i in enumerate(mapping_src):
+    clusters_2[clustered_reps==i] = i_id
+clustered_reps = clusters_2
+
 components = np.array(components)
 components = components[:n_chunks*chunk_size].reshape(n_chunks, chunk_size, 8)
 components = np.mean(components, axis=1)
@@ -144,19 +151,21 @@ components = np.mean(components, axis=1)
 print(components.shape)
 print(reps.shape)
 
-pca_features = PCA(n_components=2).fit_transform(reps)
-drift_gt = get_gt(500,3)[100:]
+drift_gt = get_gt(500,n_drifts)[n_chunks_to_filter:]
 
-fig, ax = plt.subplots(2,2,figsize=(10,10))
-ax = ax.ravel()
-
-ax[0].scatter(pca_features[:,0], pca_features[:,1], c=drift_gt)
-
+fig, ax = plt.subplots(1,3,figsize=(12,4))
+cols = plt.cm.viridis(np.linspace(0,0.9,4))
 for a in range(4):
-    ax[1].plot(reps[:,a])
-    
-for a in range(4):
-    ax[2].plot(components[:,a])
+    ax[0].plot(gaussian_filter1d(reps[:,a],5), c=cols[a])
+
+ax[0].set_xticks(get_drfs(500,n_drifts)-n_chunks_to_filter)
+ax[0].grid(ls=':')
+
+ax[1].scatter(np.arange(len(clustered_reps)), clustered_reps, c=drift_gt)
+ax[1].set_xticks(get_drfs(500,n_drifts)-n_chunks_to_filter)
+ax[1].grid(ls=':')
+
+ax[2].scatter(reps[:,0], reps[:,1], c=drift_gt)
 
 plt.tight_layout()
 plt.savefig('foo.png')
