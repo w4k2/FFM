@@ -153,9 +153,10 @@ ax[0].set_xticks(get_drfs(500,n_drifts)-n_chunks_to_filter)
 ax[0].grid(ls=':')
 ax[0].set_xlim(-100,400)
 ax[0].set_title('FFM representation')
-ax[1].set_xlabel('chunk')
-ax[1].set_ylabel('adjusted representation value')
-ax[1].legend()
+ax[0].set_xlabel('chunk')
+ax[0].set_ylabel('adjusted representation value')
+ax[0].legend(ncols=2, loc='upper left', frameon=False)
+ax[0].set_ylim(-2,14)
 
 for a in range(1):
     # ax[1].plot(gaussian_filter1d(components[:,a],5), c=cols[a])
