@@ -185,5 +185,7 @@ for aa in ax:
 
 plt.tight_layout()
 plt.savefig('foo.png')
+plt.savefig('fig_r1/online-sample.png')
+plt.savefig('fig_r1/online-sample.pdf')
     
    
