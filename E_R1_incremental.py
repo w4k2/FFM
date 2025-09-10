@@ -61,12 +61,12 @@ class iFFM:
 np.random.seed(3997)
 
 # Stream params
-n_chunks = 1000
-n_drifts = 3
+n_chunks = 500
+n_drifts = 5
 percent_informative = 0.3
 
 chunk_size = 256
-dim = 64
+dim = 128
 drift_params = [
     {'incremental':False,
      'concept_sigmoid_spacing':999},
@@ -83,7 +83,7 @@ rs = np.random.randint(100, 100000, reps)
 results = np.full((reps, len(drift_params), n_chunks, 8), np.nan)
 pbar = tqdm(total=reps*3)
 
-n_chunks_to_filter = 100
+n_chunks_to_filter = 50
 
 # Experiment
 for dp_id, dp in enumerate(drift_params):

@@ -19,54 +19,17 @@ from scipy.ndimage import median, gaussian_filter1d
 from utils import get_drfs, get_gt
 
 
-"""
-Incremental Frequency filtering metadescriptor
-"""
-
-class iFFM:
-    def __init__(self, n, chunk_size):
-        self.n = n
-        self.chunk_size = chunk_size
-        self.arg_div = None
-                
-    def fit(self, X_chunks):
-            
-        # divide into chunks
-
-        mean_fft_all = []
-        for X in X_chunks:       
-            mean_chunk = np.mean(X, axis=0)
-            fft_signal = np.fft.fft(mean_chunk)[:len(mean_chunk)//2]
-            mean_fft_all.append(fft_signal.real)
-                
-        s_div = np.var(np.array(mean_fft_all), axis=0)
-        self.arg_div = np.flip(np.argsort(s_div))[:self.n]
-    
-        return self
-        
-    def describe(self, X_chunks):
-        
-        mean_fft_all = []
-        for X in X_chunks:       
-            mean_chunk = np.mean(X, axis=0)
-            fft_signal = np.fft.fft(mean_chunk)[:len(mean_chunk)//2]
-            mean_fft_all.append(fft_signal.real)
-            
-        mean_fft_all = np.array(mean_fft_all)
-        return mean_fft_all[:, self.arg_div]
-        
-
-##### Experiment online
+##### Experiment
 
 np.random.seed(3997)
 
 # Stream params
-n_chunks = 1000
-n_drifts = 3
+n_chunks = 500
+n_drifts = 5
 percent_informative = 0.3
 
 chunk_size = 256
-dim = 64
+dim = 128
 drift_params = [
     {'incremental':False,
      'concept_sigmoid_spacing':999},
@@ -83,7 +46,7 @@ rs = np.random.randint(100, 100000, reps)
 results = np.full((reps, len(drift_params), n_chunks, 8), np.nan)
 pbar = tqdm(total=reps*3)
 
-n_chunks_to_filter = 100
+n_chunks_to_filter = 50
 
 # Experiment
 for dp_id, dp in enumerate(drift_params):
@@ -97,8 +60,6 @@ for dp_id, dp in enumerate(drift_params):
                         random_state=_rs,
                         **dp)
     
-        iffm = iFFM(n=8, chunk_size=chunk_size)
-
         X_fit = []
         X_describe = []
         for chunk_id in range(n_chunks):

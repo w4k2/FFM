@@ -1,7 +1,7 @@
 import strlearn
+from ffm import FFM
 import numpy as np
 from tqdm import tqdm
-from pymfe.mfe import MFE
 
 """
 Experiment 2: Compare with different metafeatures on single data stream type
@@ -19,18 +19,17 @@ D. FFM
 
 E. PCA from original features
 
-
 """
 
 np.random.seed(3997)
 
 # Stream params
-n_chunks = 1000
-n_drifts = 3
+n_chunks = 500
+n_drifts = 5
 percent_informative = 0.3
 
 chunk_size = 256
-dim = 64
+dim = 128
 drift_params = [
     {'incremental':False,
      'concept_sigmoid_spacing':999},
@@ -44,12 +43,8 @@ drift_params = [
 reps = 10
 rs = np.random.randint(100, 100000, reps)
 
-results = np.full((reps, len(drift_params), n_chunks, 10), np.nan)
-pbar = tqdm(total=reps*3*1000)
-
-extractor = MFE(groups="all", 
-                features=["mean", "sd", "cor", "skewness", "kurtosis"])
-
+results = np.full((reps, len(drift_params), n_chunks, 8), np.nan)
+pbar = tqdm(total=reps*3)
 
 # Experiment
 for dp_id, dp in enumerate(drift_params):
@@ -62,19 +57,13 @@ for dp_id, dp in enumerate(drift_params):
                         n_informative=int(percent_informative*dim),
                         random_state=_rs,
                         **dp)
+    
+        ffm = FFM(n=8)
+        ffm.describe(stream)
         
-        meta_all = []
-        for i in range(n_chunks):
-            X, y = stream.get_chunk()
-            
-            extractor.fit(X, y)
-            meta = extractor.extract()[1]
-            
-            meta_all.append(meta)
-            pbar.update(1)    
-
-        meta_all = np.array(meta_all)
+        rep = ffm.mean_fft_all[:,ffm.arg_div]
         
-        results[_rs_id, dp_id] = meta_all
+        results[_rs_id, dp_id] = rep
         
-        np.save('res/e2_a.npy', results)
+        pbar.update(1)    
+        np.save('res/e2_d.npy', results)
