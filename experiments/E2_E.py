@@ -43,7 +43,7 @@ drift_params = [
 reps = 10
 rs = np.random.randint(100, 100000, reps)
 
-results = np.full((reps, len(drift_params), n_chunks, 2), np.nan)
+results = np.full((reps, len(drift_params), n_chunks, 8), np.nan)
 pbar = tqdm(total=reps*3*1000)
 
 # Experiment
@@ -69,8 +69,8 @@ for dp_id, dp in enumerate(drift_params):
 
             
         meta_all = np.array(meta_all)
-        meta_all = PCA(n_components=2).fit_transform(meta_all)
+        meta_all = PCA(n_components=8).fit_transform(meta_all)
         
         results[_rs_id, dp_id] = meta_all
 
-        np.save('res/e2_e.npy', results)
+        np.save('res/e2_e_8.npy', results)

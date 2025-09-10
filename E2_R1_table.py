@@ -11,12 +11,13 @@ res_a = np.load('res/e2_a.npy') # CED
 res_c = np.load('res/e2_c.npy') # ICI
 res_d = np.load('res/e2_d.npy') # FFM
 res_di = np.load('res/e_r1_incr.npy') # iFFM
-res_e = np.load('res/e2_e.npy') # PCA
+res_e = np.load('res/e2_e_8.npy') # PCA
+res_ei = np.load('res/e_r1_pca_incr.npy') # iPCA
 
-res_all = np.zeros((5, 10, 3, 4))
+res_all = np.zeros((6, 10, 3, 4))
 gt = get_gt(1000, 3)
 
-for res_id, res in enumerate([res_a, res_c, res_d, res_di, res_e]):
+for res_id, res in enumerate([res_a, res_c, res_d, res_di, res_e, res_ei]):
         
     for rep in range(10):
         for drift in range(3):
@@ -32,7 +33,7 @@ for res_id, res in enumerate([res_a, res_c, res_d, res_di, res_e]):
 
 print(res_all.shape) # 4, 10, 3, 4 = method, reps, drift, metrics
 
-labels = ['CED', 'ICI', 'FFM', 'iFFM', 'PCA']
+labels = ['CED', 'ICI', 'FFM', 'iFFM', 'PCA', 'iPCA']
 drifts = ['Sudden','Gradual','Incremental']
 metrics = ['NMI', 'Rand', 'Completness', 'Homogenity']
 
@@ -55,11 +56,11 @@ for m_id, m in enumerate(metrics):
         # ttest
         alpha = 0.05
         
-        t_stat_all = np.full((5,5), np.nan)
-        pval_all = np.full((5,5), np.nan)
+        t_stat_all = np.full((6,6), np.nan)
+        pval_all = np.full((6,6), np.nan)
         
-        for i in range(5):
-            for j in range(5):
+        for i in range(6):
+            for j in range(6):
                 t_stat, pval = ttest_ind(aa[:,i], aa[:,j])
                 print(t_stat, pval)
                 t_stat_all[i,j] = t_stat
