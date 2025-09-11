@@ -50,12 +50,12 @@ class FFM:
         self.mean_fft_all = np.array(self.mean_fft_all)
                 
         var = np.var(self.mean_fft_all, axis=0)
-        self.arg_var = np.flip(np.argsort(var))[:self.n]
+        self.arg_div = np.flip(np.argsort(var))[:self.n]
             
-        return self.mean_fft_all[:,self.arg_var]
+        return self.mean_fft_all[:,self.arg_div]
     
     def cluster(self, c):
-        samples_std = StandardScaler().fit_transform(self.mean_fft_all[:,self.arg_var])
+        samples_std = StandardScaler().fit_transform(self.mean_fft_all[:,self.arg_div])
         return KMeans(n_clusters=c).fit_predict(samples_std)
             
     
@@ -65,7 +65,7 @@ class FFM:
         for chunk_fft in self.mean_fft_all:
             i_convs = []
 
-            for freq in np.sort(self.arg_var):
+            for freq in np.sort(self.arg_div):
             
                 mask = np.zeros((self.mean_fft_all.shape[1]))
                 mask[freq] = 1
