@@ -11,18 +11,19 @@ res_a = np.load('res/e2_a.npy') # CED
 res_c = np.load('res/e2_c.npy') # ICI
 res_f = np.load('res/e2_f.npy') # centroid
 res_g = np.load('res/e2_g.npy') # complexity
-res_e = np.load('res/e2_e_8.npy') # PCA
+# res_e = np.load('res/e2_e_8.npy') # PCA
 res_ei = np.load('res/e_r1_pca_incr.npy') # iPCA
-res_d = np.load('res/e2_d.npy') # FFM
 res_di = np.load('res/e_r1_incr.npy') # iFFM
+
+res_d = np.load('res/e2_d.npy') # FFM
 
 cluster_reps = 10
 rs = np.random.randint(100,10000,cluster_reps)
 
-res_all = np.zeros((8, 10, cluster_reps, 3, 4))
+res_all = np.zeros((7, 10, cluster_reps, 3, 4))
 gt = get_gt(500, 5)
 
-for res_id, res in enumerate([res_a, res_c, res_f, res_g, res_e, res_ei, res_d, res_di]):
+for res_id, res in enumerate([res_a, res_c, res_f, res_g, res_ei, res_di, res_d]):
         
     for rep in range(10):
         for drift in range(3):
@@ -36,17 +37,14 @@ for res_id, res in enumerate([res_a, res_c, res_f, res_g, res_e, res_ei, res_d, 
                 clusters_std = KMeans(n_clusters=6, random_state=rs[cr_id]).fit_predict(samples_std)
                 
                 for m_id, m in enumerate([normalized_mutual_info_score, adjusted_rand_score, completeness_score, homogeneity_score]):
-                    try:
-                        res_all[res_id, rep, cr_id, drift, m_id] = m(gt, clusters_std)
-                    except:
-                        pass
+                    res_all[res_id, rep, cr_id, drift, m_id] = m(gt, clusters_std)
 
 res_all = np.mean(res_all, axis=2)
 mean_res_all = np.mean(res_all, axis=(1)) # 5, 3, 4
 print(res_all.shape)
 # exit()
 
-labels = ['CED', 'ICI', 'CD', 'CC', 'PCA', 'iPCA', 'FFM', 'iFFM']
+labels = ['CED', 'ICI', 'CD', 'CC', 'iPCA', 'iFFM', 'FFM']
 cols = plt.cm.coolwarm(np.linspace(0,1,4))
 
 fig, ax = plt.subplots(3,4,figsize=(12,7), sharex=True, sharey=True)
@@ -71,7 +69,7 @@ for drf_id, drf in enumerate(['Sudden','Gradual','Incremental']):
         ax[drf_id, metric_id].spines['right'].set_visible(0)
         
         
-        ax[drf_id, metric_id].set_xticks(np.arange(1,9), labels)
+        ax[drf_id, metric_id].set_xticks(np.arange(1,8), labels, rotation=45)
 
         if drf_id==0:
             ax[drf_id, metric_id].set_title(metric)
