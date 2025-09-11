@@ -9,12 +9,12 @@ np.random.seed(92882)
 
 res_a = np.load('res/e2_a.npy') # CED
 res_c = np.load('res/e2_c.npy') # ICI
-res_d = np.load('res/e2_d.npy') # FFM
-res_di = np.load('res/e_r1_incr.npy') # iFFM
-res_e = np.load('res/e2_e_8.npy') # PCA
-res_ei = np.load('res/e_r1_pca_incr.npy') # iPCA
 res_f = np.load('res/e2_f.npy') # centroid
 res_g = np.load('res/e2_g.npy') # complexity
+res_e = np.load('res/e2_e_8.npy') # PCA
+res_ei = np.load('res/e_r1_pca_incr.npy') # iPCA
+res_d = np.load('res/e2_d.npy') # FFM
+res_di = np.load('res/e_r1_incr.npy') # iFFM
 
 cluster_reps = 10
 rs = np.random.randint(100,10000,cluster_reps)
@@ -22,7 +22,7 @@ rs = np.random.randint(100,10000,cluster_reps)
 res_all = np.zeros((8, 10, cluster_reps, 3, 4))
 gt = get_gt(500, 5)
 
-for res_id, res in enumerate([res_a, res_c, res_d, res_di, res_e, res_ei, res_f, res_g]):
+for res_id, res in enumerate([res_a, res_c, res_f, res_g, res_e, res_ei, res_d, res_di]):
         
     for rep in range(10):
         for drift in range(3):
@@ -46,10 +46,10 @@ mean_res_all = np.mean(res_all, axis=(1)) # 5, 3, 4
 print(res_all.shape)
 # exit()
 
-labels = ['CED', 'ICI', 'FFM', 'iFFM', 'PCA', 'iPCA', 'CD', 'CC']
+labels = ['CED', 'ICI', 'CD', 'CC', 'PCA', 'iPCA', 'FFM', 'iFFM']
 cols = plt.cm.coolwarm(np.linspace(0,1,4))
 
-fig, ax = plt.subplots(3,4,figsize=(12,8), sharex=True, sharey=True)
+fig, ax = plt.subplots(3,4,figsize=(12,7), sharex=True, sharey=True)
 
 for drf_id, drf in enumerate(['Sudden','Gradual','Incremental']):
     ax[drf_id,0].set_ylabel('%s drift' % drf)
@@ -81,6 +81,6 @@ fig.align_ylabels()
 
 plt.tight_layout()
 plt.savefig('foo.png') 
-plt.savefig('vis_E2_R1.png')
-plt.savefig('vis_E2_R1.pdf')
+plt.savefig('fig_r1/vis_E2_R1.png')
+plt.savefig('fig_r1/vis_E2_R1.pdf')
         
