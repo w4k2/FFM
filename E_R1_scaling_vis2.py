@@ -20,6 +20,8 @@ mean_res = np.mean(res, axis=0)
 fig, ax = plt.subplots(1,3,figsize=(12,4), sharex=False, sharey=True)
 cols = plt.cm.coolwarm(np.linspace(0,1,len(chunk_size)))
 for chs_id, chs in enumerate(chunk_size):
+    if chs_id%2==0:
+        continue
     ax[0].plot(mean_res[:,chs_id,-1], 
                label='chunk size = %i' % chs,
                color=cols[chs_id])
@@ -29,7 +31,7 @@ for chs_id, chs in enumerate(chunk_size):
 ax[0].set_xlabel('number of chunks')
 ax[0].set_xticks(np.arange(len(n_chunks)), n_chunks)
 ax[0].set_ylabel('time [ms]')
-ax[0].legend()
+ax[0].legend(frameon=False)
 
 cols = plt.cm.coolwarm(np.linspace(0,1,len(n_chunks)))
 for nch_id, nch in enumerate(n_chunks):
@@ -41,7 +43,7 @@ for nch_id, nch in enumerate(n_chunks):
     
 ax[1].set_xlabel('chunk size')
 ax[1].set_xticks(np.arange(len(chunk_size)), chunk_size)
-ax[1].legend()
+ax[1].legend(frameon=False)
 # ax[1].set_ylabel('time')
 
 cols = plt.cm.coolwarm(np.linspace(0,1,len(n_chunks)))
@@ -54,7 +56,7 @@ for nch_id, nch in enumerate(n_chunks):
     
 ax[2].set_xlabel('data dimensionality')
 ax[2].set_xticks(np.arange(len(dims)), dims)
-ax[2].legend()
+ax[2].legend(frameon=False)
 # ax[2].set_ylabel('time')
 
 ax[0].set_ylim(0,80)
