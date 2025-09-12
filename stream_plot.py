@@ -109,3 +109,5 @@ ax[2].set_yticks([0,1,2,3])
 
 plt.tight_layout()
 plt.savefig('foo.png')
+plt.savefig('fig_r1/stream_plot.png')
+plt.savefig('fig_r1/stream_plot.pdf')
