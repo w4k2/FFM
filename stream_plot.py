@@ -55,6 +55,7 @@ ax[1].set_xlim(0,400)
 ax[2].set_xlim(0,400)
 
 ax[1].set_ylabel('accuracy')
+ax[1].set_ylim(0.5,1)
 ax[2].set_ylabel('concept\nground-truth')
 # ax[1].set_xlabel('chunk of a concept change')
 ax[2].set_xlabel('chunk index / concept change')
@@ -104,8 +105,8 @@ ax4.set_title('chunk: %i' % chunks_idx[3])
 
 for aa in [ax1, ax2, ax3, ax4]:
     aa.set_xlabel('feature 0')
-    aa.set_ylabel('feature 1')
-    
+
+ax1.set_ylabel('feature 1')    
 ax[2].set_yticks([0,1,2,3])
 
 ax[1].spines['top'].set_visible(False)

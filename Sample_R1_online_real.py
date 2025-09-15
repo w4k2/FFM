@@ -86,6 +86,9 @@ np.random.seed(3997)
 import os
 files = os.listdir('insects')
 
+print(files[1])
+exit()
+
 print(files)
 chunk_size=50
 n=5
