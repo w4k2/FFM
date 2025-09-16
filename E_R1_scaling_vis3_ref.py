@@ -27,66 +27,64 @@ mean_res = np.nanmean(res, axis=0)
 mean_res_ref = np.nanmean(res_ref, axis=0)
 
 fig, ax = plt.subplots(1,3,figsize=(12,4), sharex=False, sharey=True)
-cols = plt.cm.coolwarm(np.linspace(0,1,len(chunk_size)))
+cols = plt.cm.coolwarm(np.linspace(0.1,0.9,2))
 
 # ids = [-1,-2,-3]
 ids = [-1,-2]
 
-for id in ids:
+for id_id, id in enumerate(ids):
     chs = chunk_size[id]
     nch = n_chunks[id]
 
     ax[0].plot(mean_res[:,id,-1], 
                 label='FFM | chunk size = %i' % chs,
-                color=cols[id])
+                color=cols[id_id])
     ax[0].plot(mean_res_ref[:,id,-1], 
                     label='PCA | chunk size = %i' % chs,
-                color=cols[id], ls=':')
+                color=cols[id_id], ls=':')
     ax[0].scatter(np.arange(len(n_chunks)), mean_res[:,id,-1], 
-                color=cols[id], marker="$\u25EF$")
+                color=cols[id_id], marker="$\u25EF$")
     ax[0].scatter(np.arange(len(n_chunks)), mean_res_ref[:,id,-1], 
-                color=cols[id], marker="$\u25EF$")
+                color=cols[id_id], marker="$\u25EF$")
     
 ax[0].set_xlabel('number of chunks')
 ax[0].set_xticks(np.arange(len(n_chunks)), n_chunks)
 ax[0].set_ylabel('time [ms]')
 ax[0].legend(frameon=False)
 
-cols = plt.cm.coolwarm(np.linspace(0,1,len(n_chunks)))
 
-for id in ids:
+for id_id, id in enumerate(ids):
     chs = chunk_size[id]
     nch = n_chunks[id]
     ax[1].plot(mean_res[id,:,-1], 
                 label='FFM | n chunks = %i' % nch,
-                color=cols[id])
+                color=cols[id_id])
     ax[1].scatter(np.arange(len(chunk_size)), mean_res[id,:,-1], 
-                color=cols[id], marker="$\u25EF$")
+                color=cols[id_id], marker="$\u25EF$")
     ax[1].plot(mean_res_ref[id,:,-1], 
                 label='PCA | n chunks = %i' % nch, 
-                color=cols[id], ls=':')
+                color=cols[id_id], ls=':')
     ax[1].scatter(np.arange(len(chunk_size)), mean_res_ref[id,:,-1], 
-                color=cols[id], marker="$\u25EF$")
+                color=cols[id_id], marker="$\u25EF$")
 
 ax[1].set_xlabel('chunk size')
 ax[1].set_xticks(np.arange(len(chunk_size)), chunk_size)
 ax[1].legend(frameon=False)
 # ax[1].set_ylabel('time')
 
-cols = plt.cm.coolwarm(np.linspace(0,1,len(n_chunks)))
-for id in ids:
+for id_id, id in enumerate(ids):
     chs = chunk_size[id]
     nch = n_chunks[id]
     ax[2].plot(mean_res[id,-1,], 
                 label='FFM | n chunks = %i' % nch,
-                color=cols[id])
+                color=cols[id_id])
     ax[2].plot(mean_res_ref[id,-1,],
                 label='PCA | n chunks = %i' % nch, 
-                color=cols[id], ls=':')
+                color=cols[id_id], ls=':')
     ax[2].scatter(np.arange(len(dims)), mean_res[id,-1,:], 
-                color=cols[id], marker="$\u25EF$")
+                color=cols[id_id], marker="$\u25EF$")
     ax[2].scatter(np.arange(len(dims)), mean_res_ref[id,-1,:], 
-                color=cols[id], marker="$\u25EF$")
+                color=cols[id_id], marker="$\u25EF$")
 
 ax[2].set_xlabel('data dimensionality')
 ax[2].set_xticks(np.arange(len(dims)), dims)
