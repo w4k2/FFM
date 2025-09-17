@@ -19,7 +19,7 @@ rs = np.random.randint(100, 100000, reps)
 
 n_concepts = [2,4,6,8,10]
 chunk_size = [100,200,400]
-n_features = 500
+n_features = 100
 
 metrics = [davies_bouldin_score, silhouette_score, calinski_harabasz_score]
 n_consiedred_concepts = np.arange(2,12)
@@ -47,7 +47,7 @@ for _rs_id, _rs in enumerate(rs):
             ffm = FFM(n=16)
 
             ffm.describe(stream)
-            rep = ffm.mean_fft_all[:,ffm.arg_var]
+            rep = ffm.mean_fft_all[:,ffm.arg_div]
             rep = StandardScaler().fit_transform(rep)
 
             for n_considered_id, n_considered in enumerate(n_consiedred_concepts):
@@ -59,6 +59,6 @@ for _rs_id, _rs in enumerate(rs):
 
             pbar.update(1)
             print(res[_rs_id, ch_s_id, n_concepts_id])
-            np.save('res/e3.npy', res)               
+            np.save('res/e3_r1.npy', res)               
             
 pbar.close()
