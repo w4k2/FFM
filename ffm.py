@@ -1,7 +1,6 @@
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.discriminant_analysis import StandardScaler
-from scipy.stats import entropy
 
 """
 Frequency filtering metadescriptor
@@ -11,7 +10,7 @@ class FFM:
     def __init__(self, n):
         self.n=n
         
-    def describe(self, stream, div='var'):    
+    def describe(self, stream):    
         self.mean_fft_all = []
         
         while chunk := stream.get_chunk():
@@ -23,15 +22,7 @@ class FFM:
                   
         self.mean_fft_all = np.array(self.mean_fft_all)
               
-        if div == 'var'  :
-            s_div = np.var(self.mean_fft_all, axis=0)
-
-        elif div == 'ent':
-            s_div = entropy(np.abs(self.mean_fft_all), axis=0)
-            
-        elif div == 'eng':
-            s_div = np.mean(np.abs(self.mean_fft_all), axis=0)
-
+        s_div = np.var(self.mean_fft_all, axis=0)
         self.arg_div = np.flip(np.argsort(s_div))[:self.n]
         return self.mean_fft_all[:,self.arg_div]
     
@@ -60,7 +51,6 @@ class FFM:
             
     
     def visualize(self):
-        
         self.chunk_convs = []
         for chunk_fft in self.mean_fft_all:
             i_convs = []
