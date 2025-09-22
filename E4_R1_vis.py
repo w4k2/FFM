@@ -15,7 +15,7 @@ print(files)
 
 print(files)
 chunk_size=[100,500,50,200,50,100,500,100,500,500]
-n=5
+n=8
 
 for f_id, f in enumerate(files):
     
