@@ -29,13 +29,13 @@ for f_id, f in enumerate(files):
         plt.suptitle('%s | Classifier: %s' % (f.split('.')[0].replace('-', ' | ').replace('_', ' ').replace('norm', ''),clfs[clf_id]))
         
         ax[0].plot(gaussian_filter1d(results[:,clf_id,0],s), label='common', c=cols2[0], alpha=0.7)
-        ax[0].plot(gaussian_filter1d(results[:,clf_id,1],s), label='dedicated', c=cols2[1], alpha=0.7)
+        ax[0].plot(gaussian_filter1d(results[:,clf_id,1],s), label='specific', c=cols2[1], alpha=0.7)
         ax[0].set_ylabel('incremental\nBAC')
         ax[0].legend(ncols=2, loc='upper left', frameon=False)
         ax[0].set_ylim(0,1.01)
         
         ax[1].plot(gaussian_filter1d(results[:,clf_id,2],s), label='common', c=cols2[0], alpha=0.7)
-        ax[1].plot(gaussian_filter1d(results[:,clf_id,3],s), label='dedicated', c=cols2[1], alpha=0.7)
+        ax[1].plot(gaussian_filter1d(results[:,clf_id,3],s), label='specific', c=cols2[1], alpha=0.7)
         ax[1].set_ylabel('first chunk\nBAC')
         ax[1].set_ylim(0,1.01)
 
