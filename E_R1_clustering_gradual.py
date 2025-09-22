@@ -100,7 +100,7 @@ import matplotlib.pyplot as plt
 ### PART 2 -- ANALYZE metrics
 
 cluster_names = [
-    'AP', 'AC', 'B', 'KNM', 'DBS',
+    'AP', 'AC', 'B', 'BKM', 'DBS',
     'KM', 'MS', 'OPT', 'SC'
 ]
 metrics = ['NMI', 'Rand', 'Completness', 'Homogenity']

@@ -14,57 +14,57 @@ import matplotlib.pyplot as plt
 
 ### PART 1 -- Cluster best representation from R1_div
 
-from utils import get_gt
+# from utils import get_gt
 
-res = np.load('res/e_r1_div.npy')
-print(res.shape) #(100, 3, 1000, 8)
+# res = np.load('res/e_r1_div.npy')
+# print(res.shape) #(100, 3, 1000, 8)
 
-res = res[:,0] # variance
-print(res.shape) #(100, 1000, 8) == reps x chunks x metafeatures
+# res = res[:,0] # variance
+# print(res.shape) #(100, 1000, 8) == reps x chunks x metafeatures
 
-gt = get_gt(1000, 3)
+# gt = get_gt(1000, 3)
 
-metrics = ['NMI', 'Rand', 'Completness', 'Homogenity']
-clustering = [
-    AffinityPropagation(),
-    AgglomerativeClustering(n_clusters=6),
-    Birch(n_clusters=6),
-    BisectingKMeans(n_clusters=6),
-    DBSCAN(),
-    KMeans(n_clusters=6),
-    MeanShift(),
-    OPTICS(),
-    SpectralClustering(n_clusters=6)
-]
+# metrics = ['NMI', 'Rand', 'Completness', 'Homogenity']
+# clustering = [
+#     AffinityPropagation(),
+#     AgglomerativeClustering(n_clusters=6),
+#     Birch(n_clusters=6),
+#     BisectingKMeans(n_clusters=6),
+#     DBSCAN(),
+#     KMeans(n_clusters=6),
+#     MeanShift(),
+#     OPTICS(),
+#     SpectralClustering(n_clusters=6)
+# ]
 
-res_all = np.zeros((100, len(clustering), len(metrics)))
-pbar = tqdm(total=100*len(clustering))
+# res_all = np.zeros((100, len(clustering), len(metrics)))
+# pbar = tqdm(total=100*len(clustering))
 
-for rep in range(100):
-    samples = res[rep]
-    samples[np.isinf(samples)] = 0
-    samples[np.isnan(samples)] = 0
-    samples_std = StandardScaler().fit_transform(samples)
+# for rep in range(100):
+#     samples = res[rep]
+#     samples[np.isinf(samples)] = 0
+#     samples[np.isnan(samples)] = 0
+#     samples_std = StandardScaler().fit_transform(samples)
     
-    for c_id, clustering_alg in enumerate(clustering):
-        alg = clone(clustering_alg)
-        try:
-            clusters_std = alg.fit_predict(samples_std)
-        except:
-            alg.fit(samples_std)
-            clusters_std = alg.labels_
+#     for c_id, clustering_alg in enumerate(clustering):
+#         alg = clone(clustering_alg)
+#         try:
+#             clusters_std = alg.fit_predict(samples_std)
+#         except:
+#             alg.fit(samples_std)
+#             clusters_std = alg.labels_
 
-        for m_id, m in enumerate([normalized_mutual_info_score, adjusted_rand_score, completeness_score, homogeneity_score]):
-            res_all[rep, c_id, m_id] = m(gt, clusters_std)
+#         for m_id, m in enumerate([normalized_mutual_info_score, adjusted_rand_score, completeness_score, homogeneity_score]):
+#             res_all[rep, c_id, m_id] = m(gt, clusters_std)
         
-        pbar.update(1)
-        np.save('res/e_r1_cluster.npy', res_all)
+#         pbar.update(1)
+#         np.save('res/e_r1_cluster.npy', res_all)
    
 
 ### PART 2 -- ANALYZE metrics
 
 cluster_names = [
-    'AP', 'AC', 'B', 'KNM', 'DBS',
+    'AP', 'AC', 'B', 'BKM', 'DBS',
     'KM', 'MS', 'OPT', 'SC'
 ]
 metrics = ['NMI', 'Rand', 'Completness', 'Homogenity']
