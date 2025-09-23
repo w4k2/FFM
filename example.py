@@ -16,7 +16,7 @@ des = ffm.describe(stream)
 print(des.shape)
 
 # Selected frequencies
-print(ffm.arg_var)
+print(ffm.arg_div)
 
 # Cluster into concepts
 clusters = ffm.cluster(c=4)
