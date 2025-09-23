@@ -172,3 +172,4 @@ cython_debug/
 
 insects
 *.ipynb
+insects_data_streams/
