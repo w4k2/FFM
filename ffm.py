@@ -26,7 +26,7 @@ class FFM:
         self.arg_div = np.flip(np.argsort(s_div))[:self.n]
         return self.mean_fft_all[:,self.arg_div]
     
-    def describe_data(self, data, chunk_size):    
+    def describe_data(self, data, chunk_size):
         self.mean_fft_all = []
         
         n_chunks = len(data)//chunk_size
@@ -47,6 +47,22 @@ class FFM:
     
     def cluster(self, c):
         samples_std = StandardScaler().fit_transform(self.mean_fft_all[:,self.arg_div])
+        return KMeans(n_clusters=c).fit_predict(samples_std)
+    
+    def cluster_data(self, data, chunk_size, c):
+        mean_fft_all = []
+        n_chunks = len(data)//chunk_size
+        
+        for chunk_id in range(n_chunks):
+            X = data[chunk_id*chunk_size : (chunk_id+1)*chunk_size]
+                        
+            mean_chunk = np.mean(X, axis=0)
+            fft_signal = np.fft.fft(mean_chunk)[:len(mean_chunk)//2]
+            mean_fft_all.append(fft_signal.real)
+               
+        mean_fft_all = np.array(mean_fft_all)
+        
+        samples_std = StandardScaler().fit_transform(mean_fft_all[:,self.arg_div])
         return KMeans(n_clusters=c).fit_predict(samples_std)
             
     
